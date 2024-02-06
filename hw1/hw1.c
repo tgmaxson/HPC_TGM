@@ -9,9 +9,10 @@ void updateBoard(int** currentBoard, int** nextBoard, int size);
 void printBoard(int** board, int size);
 void copyBoard(int** source, int** destination, int size);
 
+
 int main(int argc, char *argv[]) {
     if (argc < 4) { // Helper like argparse in python
-        printf("Usage: %s <board size: int> <max generations: int> <print all: int as bool>\n", argv[0]);
+        printf("Usage: %s <board size: int> <max generations: int> <print: int as bool>\n", argv[0]);
         return 1;
     }
 
@@ -35,13 +36,9 @@ int main(int argc, char *argv[]) {
         updateBoard(currentBoard, nextBoard, N); // Find next board
         copyBoard(nextBoard, currentBoard, N); // Shuffle it in
 
-        if (PRINT_ALL) { // Printing all the time
+        if (PRINT_ALL) { // Printing this run
             printBoard(currentBoard, N);
         }
-    }
-
-    if (!PRINT_ALL) { // Since we didn't before
-        printBoard(currentBoard, N);
     }
 
     // Free allocated memory
@@ -51,6 +48,8 @@ int main(int argc, char *argv[]) {
     }
     free(currentBoard);
     free(nextBoard);
+
+    printf("Run of board size %d completed for %d generations!\n", N, MAX_GENERATIONS);
 
     return 0;
 }
