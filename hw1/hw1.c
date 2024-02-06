@@ -20,6 +20,8 @@ int main(int argc, char *argv[]) {
     const int MAX_GENERATIONS = atoi(argv[2]); // Max generations
     const int PRINT_ALL = (argc > 3) ? atoi(argv[3]) : 0; // Do we print everything?
 
+    const float start_time = time(NULL);
+
     // Allocate memory for the boards
     int** currentBoard = (int**) malloc((N+2) * sizeof(int*));
     int** nextBoard = (int**) malloc((N+2) * sizeof(int*));
@@ -50,6 +52,7 @@ int main(int argc, char *argv[]) {
     free(nextBoard);
 
     printf("Run of board size %d completed for %d generations!\n", N, MAX_GENERATIONS);
+    printf("%s took %f \n", argv[0], time(NULL) - start_time);
 
     return 0;
 }
