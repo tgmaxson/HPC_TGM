@@ -11,6 +11,8 @@ void copyBoard(int** source, int** destination, int size);
 
 
 int main(int argc, char *argv[]) {
+    const float start_time = time(NULL);
+
     if (argc < 4) { // Helper like argparse in python
         printf("Usage: %s <board size: int> <max generations: int> <print: int as bool>\n", argv[0]);
         return 1;
@@ -19,8 +21,6 @@ int main(int argc, char *argv[]) {
     const int N = atoi(argv[1]); // Board size (no PBC)
     const int MAX_GENERATIONS = atoi(argv[2]); // Max generations
     const int PRINT_ALL = (argc > 3) ? atoi(argv[3]) : 0; // Do we print everything?
-
-    const float start_time = time(NULL);
 
     // Allocate memory for the boards
     int** currentBoard = (int**) malloc((N+2) * sizeof(int*));
