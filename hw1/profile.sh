@@ -13,6 +13,3 @@ done
 ./bin/hw1-gcc-O0 1000 5000 0
 ./bin/hw1-gcc-O0 5000 1000 0
 ./bin/hw1-gcc-O0 5000 5000 0
-
-
-

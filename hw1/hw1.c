@@ -11,7 +11,7 @@ void copyBoard(int** source, int** destination, int size);
 
 
 int main(int argc, char *argv[]) {
-    const float start_time = time(NULL);
+    const clock_t start_time = clock();
 
     if (argc < 4) { // Helper like argparse in python
         printf("Usage: %s <board size: int> <max generations: int> <print: int as bool>\n", argv[0]);
@@ -51,8 +51,11 @@ int main(int argc, char *argv[]) {
     free(currentBoard);
     free(nextBoard);
 
+    const clock_t end_time = clock();
+    const double time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+
     printf("Run of board size %d completed for %d generations!\n", N, MAX_GENERATIONS);
-    printf("%s took %f \n", argv[0], time(NULL) - start_time);
+    printf("%s took %f seconds.\n", argv[0], time_spent);
 
     return 0;
 }
