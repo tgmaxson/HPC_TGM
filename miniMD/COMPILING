@@ -1,0 +1,27 @@
+# Compiling CPU Only
+
+Load intel to ensure icc and intel MPI are available
+
+`. /etc/environment-modules/software/intel/2023.2.0/setvars.sh`
+
+Enter the ref folder to compile a reference version of miniMD.
+
+`make -f Makefile.default` appears to work fine and uses mpicxx to compile using Intel MPI and g++.
+
+`make test` indicates tests pass for the reference implementation
+
+# Compiling Kokkos
+
+Additionally we load nvhpc to get CUDA read to go
+
+`module load nvhpc`
+
+This changes the default compiler to nvcc, not g++.
+
+Then go into the kokkos folder and run the following to compile.
+
+`make KOKKOS_PATH=/mnt/public/tgmaxson/HPC_Compile/kokkos/`
+
+Compiling is incredibly slow, maybe because Kokkos is also being compiled?
+
+Kokkos has been updated since this was uploaded.  Need to identify a working version of Kokkos for this project.
