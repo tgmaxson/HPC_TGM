@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     const clock_t end_time = clock();
     const double time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC;
 
-    printf("EXE: %s SIZE: %d GENS: %d SEC: %f.\n", argv[0], N, MAX_GENERATIONS, time_spent);
+    printf("EXE: %s SIZE: %d GENS: %d SEC: %f \n", argv[0], N, MAX_GENERATIONS, time_spent);
 
     return 0;
 }
