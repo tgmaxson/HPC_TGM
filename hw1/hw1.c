@@ -5,7 +5,7 @@
 
 // This isn't strictly required I think, header file is somehow useful here?
 void initializeBoard(int** board, int size);
-void updateBoard(int** currentBoard, int** nextBoard, int size);
+int updateBoard(int** currentBoard, int** nextBoard, int size);
 void printBoard(int** board, int size);
 void swapBoard(int** board1, int** board2);
 
@@ -35,11 +35,15 @@ int main(int argc, char *argv[]) {
 
     // Game loop
     for (int gen = 0; gen < MAX_GENERATIONS; ++gen) {
-        updateBoard(currentBoard, nextBoard, N); // Find next board
+        const int updated = updateBoard(currentBoard, nextBoard, N); // Find next board
         swapBoard(nextBoard, currentBoard); // Shuffle it in
 
         if (PRINT_ALL) { // Printing this run
             printBoard(currentBoard, N);
+        }
+
+        if (updated) {
+          break;
         }
     }
 
@@ -86,7 +90,8 @@ void initializeBoard(int** board, int size) {
     }
 }
 
-void updateBoard(int** currentBoard, int** nextBoard, int size) {
+int updateBoard(int** currentBoard, int** nextBoard, int size) {
+    int updated = 0;
     for (int i = 1; i <= size; i++) { // Bounds to only look at board without PBC to avoid issues
         for (int j = 1; j <= size; j++) {
             const int aliveNeighbors  = currentBoard[i - 1][j - 1] + currentBoard[i    ][j - 1] + currentBoard[i + 1][j - 1] +
@@ -97,18 +102,21 @@ void updateBoard(int** currentBoard, int** nextBoard, int size) {
             if (currentBoard[i][j] == 1) { // Alive cell
                 if (aliveNeighbors < 2 || aliveNeighbors > 3) {
                     nextBoard[i][j] = 0; // Dies
+                    updated = 1;
                 } else {
                     nextBoard[i][j] = 1; // Lives
                 }
             } else { // Dead cell
                 if (aliveNeighbors == 3) {
                     nextBoard[i][j] = 1; // Becomes alive
+                    updated = 1;
                 } else {
                     nextBoard[i][j] = 0; // Stays dead
                 }
             }
         }
     }
+    return updated;
 }
 
 void printBoard(int** board, int size) {
