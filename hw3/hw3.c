@@ -14,7 +14,8 @@ int **allocate_array(int P, int Q);
 
 
 int main(int argc, char *argv[]) {
-    const clock_t start_time = clock();
+    struct timespec start, end;
+    clock_gettime(CLOCK_REALTIME, &start);
 
     if (argc < 4) { // Helper like argparse in python
         printf("Usage: %s <board size: int> <max generations: int> <output filename: str> <threads> <seed>\n", argv[0]);
@@ -53,7 +54,7 @@ int main(int argc, char *argv[]) {
                 printBoard(currentBoard, N);
             }
 
-            if (updated) {
+            if (!updated) {
               breakLoop = 1;
             }
         }
@@ -71,16 +72,11 @@ int main(int argc, char *argv[]) {
     }
     fclose(outputFile);
 
-    // Free allocated memory
-    for (int i = 0; i < N+2; i++) {
-        free(currentBoard[i]);
-        free(nextBoard[i]);
-    }
     free(currentBoard);
     free(nextBoard);
 
-    const clock_t end_time = clock();
-    const double time_spent = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    clock_gettime(CLOCK_REALTIME, &end);
+    const double time_spent = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1E9;
 
     printf("EXE: %s SIZE: %d GENS: %d SEC: %f \n", argv[0], N, MAX_GENERATIONS, time_spent);
 
@@ -135,7 +131,7 @@ void initializeBoard(int** board, int size, int seed) {
 int updateBoard(int** currentBoard, int** nextBoard, int size) {
     int updated = 0;
 
-    #pragma omp parallel for reduction(+:updated)
+    #pragma omp parallel for collapse(2)
     for (int i = 1; i <= size; i++) { // Bounds to only look at board without PBC to avoid issues
         for (int j = 1; j <= size; j++) {
             const int aliveNeighbors  = currentBoard[i - 1][j - 1] + currentBoard[i    ][j - 1] + currentBoard[i + 1][j - 1] +
