@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     const int SEED = atoi(argv[5]); // Random Seed
 
     // Setup threading
-    omp_set_num_threads(THREADS);
+    //omp_set_num_threads(THREADS);
 
     // Allocate memory for the boards
     int** currentBoard = allocate_array(N+2, N+2);
