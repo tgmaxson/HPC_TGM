@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     const int SEED = atoi(argv[5]); // Random Seed
 
     // Setup threading
-    omp_set_num_threads(THREADS);
+    //omp_set_num_threads(THREADS);
 
     // Allocate memory for the boards
     int **currentBoard = allocate_array(N + 2, N + 2);
@@ -171,6 +171,7 @@ int **initializeBoard(int **board, int size, int seed) {
 }
 
 
+<<<<<<< HEAD
 void printBoard(int **board, int size) {
     // Make cells wider to make board more square
     for (int i = 1; i <= size; i++) { // Skip PBC edge

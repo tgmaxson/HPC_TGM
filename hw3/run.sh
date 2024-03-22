@@ -1,0 +1,9 @@
+#! /bin/bash
+
+GRID=5000
+ITER=5000
+
+for THREADS in 1 2 4 6 8 10 12 14 16 18 20
+do
+./bin/hw3 $GRID $ITER $GRID.$ITER.$THREADS.out $THREADS 123
+done
