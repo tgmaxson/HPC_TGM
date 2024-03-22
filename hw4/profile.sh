@@ -8,19 +8,20 @@
 source ~/.bashrc
 mamba activate work
 
-gcc -o bin/hw3 hw3.c -lm -Wall -O3 -fopenmp
+rm bin/hw4
+mpicc -o bin/hw4 hw4.c -lm -Wall -O3
 
 rm performance.txt
 
 for size in 50 100 250 500 750 1500 3000 4000 5000 10000 20000
 do 
-  for threads in 1 2 4 8 12 16 20 24 28
+  for tasks in 1 2 4 8 12 16 20 24 28
   do
     for gens in 5000
     do 
       for replicates in {1..3}
       do
-        ./bin/hw3 $size $gens output-$size-$gens.txt $threads 0 >> performance.txt
+        mpirun -np $tasks ./bin/hw4 $size $gens output-$size-$gens.txt 0 >> performance.txt
       done
     done
   done
