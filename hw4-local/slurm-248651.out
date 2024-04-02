@@ -1,0 +1,10 @@
+hw4.c: In function ‘main’:
+hw4.c:70:13: warning: unused variable ‘changes’ [-Wunused-variable]
+   70 |         int changes = 0;
+      |             ^~~~~~~
+hw4.c:179:22: warning: unused variable ‘time_spent’ [-Wunused-variable]
+  179 |         const double time_spent = end_time - start_time;
+      |                      ^~~~~~~~~~
+hw4.c:29:15: warning: unused variable ‘THREADS’ [-Wunused-variable]
+   29 |     const int THREADS = 1; // Threads to use
+      |               ^~~~~~~

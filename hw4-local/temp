@@ -1,0 +1,90 @@
+// Allocate memory for the part of the board local to this worker
+    int **current_board = allocate_array(N + 2, N + 2);
+    int **next_board = allocate_array(N + 2, N + 2);
+
+    // Seed consistently but make sure 
+    current_board = initialize_board(current_board, N, SEED);
+    
+    // Distribute initial array (could be scatter/gather instead)
+    for (int i = 0; i < N + 2; i++) {
+        // Broadcast each row separately
+        MPI_Bcast(current_board[i], N + 2, MPI_INT, 0, MPI_COMM_WORLD);
+    }
+
+    // Game loop
+    for (int gen = 0; gen < MAX_GENERATIONS; ++gen) {
+        if (prev_rank != MPI_PROC_NULL) {
+            MPI_Sendrecv(current_board[start_row + 1], N, MPI_INT, prev_rank, 0,
+                         current_board[start_row], N, MPI_INT, prev_rank, 0,
+                         MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+
+        if (next_rank != MPI_PROC_NULL) {
+            MPI_Sendrecv(current_board[final_row - 1], N, MPI_INT, next_rank, 0,
+                         current_board[final_row], N, MPI_INT, next_rank, 0,
+                         MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+
+        for (int i = start_row + 1; i < final_row + 1; i++) { // Bounds to only look at board without PBC to avoid issues
+            for (int j = 1; j <= N; j++) {
+                const int aliveNeighbors  = current_board[i - 1][j - 1] + current_board[i    ][j - 1] + current_board[i + 1][j - 1] +
+                                            current_board[i - 1][j    ] +                            + current_board[i + 1][j    ] +
+                                            current_board[i - 1][j + 1] + current_board[i    ][j + 1] + current_board[i + 1][j + 1];
+
+                // Game of life
+                if (current_board[i][j] == 1) { // Alive cell
+                    if (aliveNeighbors < 2 || aliveNeighbors > 3) {
+                        next_board[i][j] = 0; // Dies
+                    } else {
+                        next_board[i][j] = 1; // Lives
+                    }
+                } else { // Dead cell
+                    if (aliveNeighbors == 3) {
+                        next_board[i][j] = 1; // Becomes alive
+                    } else {
+                        next_board[i][j] = 0; // Stays dead
+                    }
+                }
+            }
+        }
+        
+        {
+            swapBoard(next_board, current_board); // Shuffle it in
+
+            if (PRINT_ALL) { // Printing this run
+                print_board(current_board, N);
+            }
+        }
+    }
+
+    // Collect final array (could be scatter/gather instead)
+    for (int i = 0; i < N + 2; i++) {
+        // Broadcast each row separately
+        int root_rank = min(N / rows_per_process, WORLD_SIZE - 1); //find correct root
+        MPI_Bcast(current_board[i], N + 2, MPI_INT, root_rank, MPI_COMM_WORLD);
+    }
+    //print_board(current_board, N); //this ends up a jumbled mess but readable
+
+    if (WORLD_RANK == 0) { // Final stuff only done on master rank
+        FILE *output_file = fopen(OUTPUT_FILENAME, "w");
+        if (output_file == NULL) {
+            perror("Error opening output file");
+            return 1; // Error code
+        }
+        else {
+            writeBoardToFile(current_board, N, output_file);
+        }
+        fclose(output_file);
+
+        double end_time = get_time();
+        const double time_spent = end_time - start_time;
+
+        printf("EXE: %s, RANKS: %d, SIZE: %d, GENS: %d, SEC: %f \n", argv[0], WORLD_SIZE, N, MAX_GENERATIONS, time_spent);
+    }
+
+    free(current_board);
+    free(next_board);
+
+    MPI_Finalize();
+
+    return 0;
