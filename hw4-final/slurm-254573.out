@@ -1,0 +1,17 @@
+hw4.c: In function ‘main’:
+hw4.c:137:72: warning: format ‘%f’ expects argument of type ‘double’, but argument 7 has type ‘int’ [-Wformat=]
+  137 |         printf("EXE: %s, RANKS: %d, SIZE: %d, GENS: %d, SEC: %f, MEM: %f \n", argv[0], WORLD_SIZE, N_X, MAX_GENERATIONS, max_time, sizes_flat[WORLD_RANK]);
+      |                                                                       ~^                                                           ~~~~~~~~~~~~~~~~~~~~~~
+      |                                                                        |                                                                     |
+      |                                                                        double                                                                int
+      |                                                                       %d
+hw4.c:135:22: warning: unused variable ‘time_spent’ [-Wunused-variable]
+  135 |         const double time_spent = end_time - start_time;
+      |                      ^~~~~~~~~~
+hw4.c:28:15: warning: unused variable ‘THREADS’ [-Wunused-variable]
+   28 |     const int THREADS = 1; // Threads to use
+      |               ^~~~~~~
+hw4.c:26:15: warning: unused variable ‘PRINT_ALL’ [-Wunused-variable]
+   26 |     const int PRINT_ALL = 0; // Old logic, we don't want to output the whole time
+      |               ^~~~~~~~~
+slurmstepd-cpu-1: error: *** JOB 254573 ON cpu-1 CANCELLED AT 2024-04-09T13:39:32 ***
