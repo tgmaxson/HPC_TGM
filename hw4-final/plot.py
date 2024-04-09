@@ -46,7 +46,7 @@ for size in unique_sizes:
     subset = data[data[:, 1] == size]
     sorted_subset = subset[np.argsort(subset[:, 0])]
 
-    one_thread_performance = sorted_subset[sorted_subset[:, 0] == 1][:, 3]
+    one_thread_performance = sorted_subset[sorted_subset[:, 0] == 1][:, 4]
     if one_thread_performance.size > 0:
         one_thread_performance = one_thread_performance[0]  # Take the first element if multiple entries
         speedup = one_thread_performance / sorted_subset[:, 4]  # Calculate speedup
