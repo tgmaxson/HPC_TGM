@@ -129,16 +129,32 @@ This is true!  Good.
 
 Now lets look at time execution of the program in general.
 
-![Time](../hw4-final/performance_time.png "Time")
+![Time](../hw4-final/performance_time_O3.png "Time")
 
 This indicates generally that time decreases as expected in a linear manner, but some weirdness is seen at small problem sizes.  Plotting as speedup shows more.
 
-![Speedup](../hw4-final/performance_speedup.png "Speedup")
+![Speedup](../hw4-final/performance_speedup_O3.png "Speedup")
+![Efficiency](../hw4-final/performance_efficiency_O3.png "Efficiency")
 
 This still makes it unclear where the issue is since the scaling dips at certain numbers of processes in a strange way.  It may be more helpful to look at efficiency as a function of block size per rank.
 
-![Block Size](../hw4-final/performance_block.png "Block")
+![Block Size](../hw4-final/performance_block_O3.png "Block")
 
 In this we can see that the block size does not have constant efficiency.  The larger sizes produce different shaped blocks compared to the small sizes.  The larger blocks produce more rectangular blocks and this appears to be harmful.  This may be a result of caching and the way the data is packed exactly.  Tracking down this final performance regression is something I can do potentially.  It may be related to row-major vs row-minor?
 
 With this in mind, it makes no sense to do the OpenMP + MPI version since the MPI is always more efficient than the OpenMP.  However, a single program will make it more comparable where I can disable the MPI or OpenMP and be sure the exact same logic is being followed.  This is something I do not currently have working.
+
+# O3 vs O1
+
+So far I am always using O3 for maximum performance and automatic SIMD instructions.  Lets see if that is actually the cause of all the performance regressions, maybe there is some non-obvious effect.
+
+O3 is on the left (or top if goes to next line) and O1 is onthe right (or bottom)
+
+![Speedup](../hw4-final/performance_speedup_O3.png "Speedup")
+![Speedup](../hw4-final/performance_speedup.png "Speedup")
+
+It appears the optimization level may also be the culpruit of the strange performance regressions I see.  Its not that performance is getting significantly worse, its that the optimizations are non-optimal at specific sizes!
+
+![Block Size](../hw4-final/performance_block.png "Block")
+
+However, this is not fully true, there may still be some weirdness with the cache at certain blocksizes.

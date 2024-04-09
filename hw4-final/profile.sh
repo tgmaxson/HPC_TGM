@@ -3,13 +3,13 @@
 #SBATCH -N 1
 #SBATCH -p main
 #SBATCH --time=4:00:00
-#SBATCH --ntasks-per-node=32
+#SBATCH --ntasks-per-node=28
 
 source ~/.bashrc
 mamba activate work
 
 rm bin/hw4
-mpicc -o bin/hw4 hw4.c -lm -Wall -O3
+mpicc -o bin/hw4 hw4.c -lm -Wall -O1
 
 rm performance.txt
 
