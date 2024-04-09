@@ -134,3 +134,11 @@ Now lets look at time execution of the program in general.
 This indicates generally that time decreases as expected in a linear manner, but some weirdness is seen at small problem sizes.  Plotting as speedup shows more.
 
 ![Speedup](../hw4-final/performance_speedup.png "Speedup")
+
+This still makes it unclear where the issue is since the scaling dips at certain numbers of processes in a strange way.  It may be more helpful to look at efficiency as a function of block size per rank.
+
+![Block Size](../hw4-final/performance_block.png "Block")
+
+In this we can see that the block size does not have constant efficiency.  The larger sizes produce different shaped blocks compared to the small sizes.  The larger blocks produce more rectangular blocks and this appears to be harmful.  This may be a result of caching and the way the data is packed exactly.  Tracking down this final performance regression is something I can do potentially.  It may be related to row-major vs row-minor?
+
+With this in mind, it makes no sense to do the OpenMP + MPI version since the MPI is always more efficient than the OpenMP.  However, a single program will make it more comparable where I can disable the MPI or OpenMP and be sure the exact same logic is being followed.  This is something I do not currently have working.
